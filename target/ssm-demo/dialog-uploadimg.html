@@ -1,0 +1,95 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+        <title>上传头像带有裁剪的功能</title>
+        <meta name="description" content="">
+        <meta name="keywords" content="">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+        <link rel="stylesheet" href="bootstrap/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="css/imgareaselect-animated.css">
+        <link rel="stylesheet" href="artdialog/css/ui-dialog.css">
+        <script type="text/javascript" src="js/jquery-2.0.3.js"></script>
+        <script type="text/javascript" src="js/upload.js"></script>
+        <script type="text/javascript" src="js/jquery.ajaxfileupload.js"></script>
+        <script src="bootstrap/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="js/jquery.imgareaselect.min.js"></script>
+        <script src="artdialog/js/dialog-min.js"></script>
+        <script src="artdialog/js/dialog-plus-min.js"></script>
+    </head>
+    <body>
+    <div class="container">
+        <div style="text-align: center; margin-top: 10px;">
+            <p>
+                <button type="button" class="btn btn-success btn-lg btn-block selectImg">
+                    <span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
+                    Browse
+                </button>
+                <button type="button" id="uploadImg" class="btn btn-success btn-lg btn-block">
+                    <span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>
+                    确定
+                </button>
+            </p>
+            <div class="bigImg" style="float:left;margin-right:50px">
+                <img id="photo">
+            </div>
+        </div>
+        <!-- 以下不显示 -->
+        <div class="smallImg" id="preview" style="width: 100px; height: 100px; overflow: hidden; display: none;">
+            <img id="view_photo" src="images/flower.jpg" style="width: 100px;height: 100px;">
+        </div>
+
+        <div class="input-group input-group-lg" style="margin-top: 5px; display: none;">
+            <span class="input-group-addon" >X</span>
+            <input type="text" disabled class="form-control startX" placeholder="X" aria-describedby="sizing-addon1">
+        </div>
+        <div class="input-group input-group-lg" style="margin-top: 5px; display: none;">
+            <span class="input-group-addon" >Y</span>
+            <input type="text" disabled class="form-control startY" placeholder="Y" aria-describedby="sizing-addon1">
+        </div>
+        <div class="input-group input-group-lg" style="margin-top: 5px; display: none;">
+            <span class="input-group-addon" >Width</span>
+            <input type="text" disabled class="form-control width" placeholder="W" aria-describedby="sizing-addon1">
+        </div>
+        <div class="input-group input-group-lg" style="margin-top: 5px; display: none;">
+            <span class="input-group-addon" >Height</span>
+            <input type="text" disabled class="form-control height" placeholder="H" aria-describedby="sizing-addon1">
+        </div>
+
+        <!-- 以上不显示 -->
+
+        <input id="upload" style="display: none;" type="file" name="file" onchange="Upload.change(this)"/>
+
+    </div>
+    </body>
+</html>
+<script>
+    $(function() {
+        Upload.init();
+        $(".selectImg").click(function(){
+            $("#upload").click();
+        });
+        var val = $("#upload").val();
+        $('#uploadImg').val(val);
+        $("#upload").ajaxfileupload({
+            'action': Upload.url,
+            'submit_button' : $('#uploadImg'),
+            'params': {
+                /** 传递参数 **/
+            },
+            'onComplete': function(rs) {
+                console.log('custom handler for file:'+rs.filename);
+                var dialog = top.dialog.get(window);
+                dialog.close(rs.filename).remove();
+            },
+            'onStart': function() {
+                //console.log('cancels upload');
+            },
+            'onCancel': function() {
+                alert('上传失败，请重试！');
+            }
+        });
+    });
+</script>
+
